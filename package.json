@@ -1,0 +1,16 @@
+{
+  "name": "demo-cyp-test",
+  "version": "1.0.0",
+  "description": "TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project.",
+  "main": "index.js",
+  "scripts": {
+    "scripts": "cypress run",
+    "cyp": "npx cypress run --config-file=cypress.config.js --headless"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cypress": "^13.13.3"
+  }
+}

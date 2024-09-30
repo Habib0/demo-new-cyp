@@ -1,0 +1,52 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  - test
+
+pool:
+  name: 'azure pipelines'
+  
+variables:
+  - group: cypress
+
+jobs:
+- job: CypressTests
+  timeoutInMinutes: 0
+  pool:
+    name: 'azure pipelines'
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "20.x"
+    displayName: "Install Node.js"
+
+  - script: |
+      echo $(userName) 
+      npm install --legacy-peer-deps
+    displayName: "npm install"
+
+  - script: |
+      npm run cyp
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: cypress/videos
+      ArtifactName: videos
+    condition: succeededOrFailed()
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "cypress/screenshots"
+      ArtifactName: "screenshots"
+    condition: Failed()
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "*.xml"
+      searchFolder: "$(System.DefaultWorkingDirectory)/tests/"
+      mergeTestResults: true
+      testRunTitle: "Publish test results"
+    condition: succeededOrFailed()
