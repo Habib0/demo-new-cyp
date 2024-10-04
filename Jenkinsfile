@@ -9,32 +9,24 @@ pipeline {
             }
         }
 
-        stage('Install NodeJS') {
-            steps {
-                script {
-                    // Use the exact name from the Global Tool Configuration
-                    def nodejs = tool name: 'NodeJS_20.x', type: 'NodeJSInstallation'
-                    env.PATH = "${nodejs}/bin:${env.PATH}"
-                }
-            }
-        }
-
         stage('Verify Node Installation') {
             steps {
-                // Verify Node.js and npm versions
-                sh 'node -v'  // For Linux/Mac agents, use 'bat' if running on Windows
+                // Verify if Node.js and npm are installed on the agent
+                sh 'node -v'  // 'bat' if using Windows agents
                 sh 'npm -v'
             }
         }
 
         stage('Install Dependencies') {
             steps {
+                // Install the project dependencies
                 sh 'npm install'
             }
         }
 
         stage('Run Cypress Tests') {
             steps {
+                // Run the Cypress tests using the npm script
                 sh 'npm run cyp'
             }
         }
@@ -42,6 +34,7 @@ pipeline {
 
     post {
         always {
+            // Publish the test results
             junit 'cypress/results/*.xml'
         }
     }
